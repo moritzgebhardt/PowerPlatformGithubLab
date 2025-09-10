@@ -1,0 +1,9 @@
+<msdyn_dataworkspace msdyn_dataworkspaceid="ac1f4d71-108e-f011-b4cb-7c1e527756ba">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>1.0</msdyn_contentschemaversion>
+  <msdyn_description>Data workspace for - Simple Todo Manager</msdyn_description>
+  <msdyn_name>Data workspace (Simple Todo Manager)</msdyn_name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_dataworkspace>

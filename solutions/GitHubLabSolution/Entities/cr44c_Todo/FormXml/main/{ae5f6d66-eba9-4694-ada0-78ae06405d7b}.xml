@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{ae5f6d66-eba9-4694-ada0-78ae06405d7b}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>0</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="ae5f6d66-eba9-4694-ada0-78ae06405d7b" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="d9ddda80-acd0-48b4-aa71-f9e8ab25ea75" labelid="9557e47f-3e04-4421-bd29-e4132f40caae">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="a788553b-bdea-46fa-a1f4-3ff70525b189" labelid="0af5a1a6-78da-42c9-8f73-c581cd7a05a9">
+                        <labels>
+                          <label description="Description" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_description" classid="679e3bcf-4030-4473-bfbe-f88957fa6640" datafieldname="cr44c_description" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="e577fbf8-dd1b-4201-8972-1adf9cb603c1" labelid="71ccb023-4204-4cfc-9260-bb83c2fe8e54">
+                        <labels>
+                          <label description="Due Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_duedate" classid="83314b1d-2dbd-416e-b64d-4fce7ac8e3b8" datafieldname="cr44c_duedate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="0f40efc7-4a6b-4d37-b7ee-5cd9af9f1a7e" labelid="49d8692a-a3dc-47da-a5c1-30731385ab70">
+                        <labels>
+                          <label description="Is Completed" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_iscompleted" classid="5900930f-3842-41a3-af83-11348a428d11" datafieldname="cr44c_iscompleted" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="fe93559f-5820-4a66-9644-5ddeae4ed484" labelid="80c82504-c677-4656-ae80-f2465489b867">
+                        <labels>
+                          <label description="cr44c_iscompletedname" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_iscompletedname" classid="12ee3914-19ef-4aeb-bbb2-573253edebed" datafieldname="cr44c_iscompletedname" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="efa1e766-2c1c-4899-8810-becf203bd13a" labelid="7d69aab9-bda5-4026-8431-6241eae1b142">
+                        <labels>
+                          <label description="Priority" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_priority" classid="bbe4576b-3ad4-4362-a755-ae315c7f1bd2" datafieldname="cr44c_priority" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="ac793942-86f6-4f07-bafd-62f7f44c55ff" labelid="d9b24474-89a5-4cbe-a329-20767d15a448">
+                        <labels>
+                          <label description="cr44c_priorityname" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_priorityname" classid="90878156-1c40-4533-b6d9-5bd0ba193fa8" datafieldname="cr44c_priorityname" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="5987a794-e63a-4e8c-9d5d-c1fdf971db7b" labelid="42c5c702-2745-46c7-b36d-03b449915dbc">
+                        <labels>
+                          <label description="Task Name" languagecode="1033" />
+                        </labels>
+                        <control id="cr44c_taskname" classid="1eccf6d9-a4fe-494f-9422-eac49ac7742f" datafieldname="cr44c_taskname" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="2ff971a3-6c4b-4857-8acb-7a5a0ccf43d5" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="36760ad1-b617-426d-8d1b-842060149d14" showlabel="false" labelid="91f582f8-97c0-41ed-a164-7b07b5942766">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="5d0915d1-dc7a-4dd0-abe8-0dc87ccee8fc" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="fcbf013e-abe1-4017-8d86-652c48884ea4" showlabel="false" labelid="46bef9d4-3e8d-400f-8330-effe47e3dee2">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="1" FallbackForm="true">
+        <Role Id="0f485016-fcb2-4d6b-9a5e-f82aa60dea3c" />
+        <Role Id="d308a944-3e12-4f07-8dca-46f08a7974e2" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Todo" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>
