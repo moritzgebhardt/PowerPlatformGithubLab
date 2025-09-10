@@ -104,10 +104,7 @@
           </row>
         </rows>
       </footer>
-      <DisplayConditions Order="1" FallbackForm="true">
-        <Role Id="0f485016-fcb2-4d6b-9a5e-f82aa60dea3c" />
-        <Role Id="d308a944-3e12-4f07-8dca-46f08a7974e2" />
-      </DisplayConditions>
+      <DisplayConditions Order="1" FallbackForm="true"></DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>
