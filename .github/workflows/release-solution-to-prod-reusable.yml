@@ -107,6 +107,8 @@ jobs:
       with:
         lfs: true
 
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/actions-install@v1
     - name: Download managed solution from GitHub artifact store
       uses: actions/download-artifact@v4
       with:
