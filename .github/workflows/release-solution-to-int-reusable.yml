@@ -1,0 +1,127 @@
+name: release-solution-to-int-reusable
+# Reusable workflow: Convert solution to managed, upload to GitHub artifacts, and deploy to PROD
+
+on:
+  workflow_call:
+    inputs: 
+      solution_name:
+        description: 'The solution name.'
+        type: string
+        default: ALMLab       
+      solution_shipping_folder:
+        description: 'Folder name for staging the exported solution *do not change*'        
+        type: string
+        default: out/ship/
+      solution_outbound_folder:
+        description: 'Staging the unpacked solution folder before check-in *do not change*'
+        type: string
+        default: out/solutions/
+      solution_source_folder: 
+        description: 'Folder name to be created and checked in *do not change*'
+        type: string
+        default: solutions/
+      solution_release_folder:
+        description: 'Folder where the released binaries are going to be hosted *do not change*'
+        type: string
+        default: out/release
+      BUILD_ENVIRONMENT_URL:
+        description: 'Build environment URL.'
+        type: string
+        required: true      
+      PRODUCTION_ENVIRONMENT_URL: 
+        description: 'Production environment URL.'
+        type: string
+        required: true
+      CLIENT_ID: 
+        description: 'The client ID'
+        type: string
+        required: true
+      TENANT_ID: 
+        description: 'The tenant ID'
+        type: string
+        required: true
+    secrets:
+      envSecret:
+        description: 'The secret value for authentication using SPN'
+        required: true
+
+jobs:
+  convert-to-managed:
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/actions-install@v1
+
+    - name: Pack solution
+      uses: microsoft/powerplatform-actions/pack-solution@v1
+      with:
+        solution-folder: ${{ inputs.solution_source_folder }}/${{ inputs.solution_name }}
+        solution-file: ${{ inputs.solution_outbound_folder }}/${{ inputs.solution_name }}.zip
+        solution-type: Unmanaged
+
+    - name: Import solution as unmanaged to build environment
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{ inputs.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ inputs.CLIENT_ID }}
+        client-secret: ${{ secrets.envSecret }}
+        tenant-id: ${{ inputs.TENANT_ID }}
+        solution-file: ${{ inputs.solution_outbound_folder }}/${{ inputs.solution_name }}.zip
+        force-overwrite: true
+        publish-changes: true
+
+    - name: Export solution as managed
+      uses: microsoft/powerplatform-actions/export-solution@v1
+      with:
+        environment-url: ${{ inputs.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ inputs.CLIENT_ID }}
+        client-secret: ${{ secrets.envSecret }} 
+        tenant-id: ${{ inputs.TENANT_ID }}
+        solution-name: ${{ inputs.solution_name }}
+        managed: true
+        solution-output-file: ${{ inputs.solution_shipping_folder }}/${{ inputs.solution_name }}_managed.zip
+
+    - name: Upload managed solution to GitHub artifact store
+      uses: actions/upload-artifact@v4
+      with:
+        name: managedSolutions
+        path: ${{ inputs.solution_shipping_folder }}/
+
+  release-to-staging:
+    needs: [ convert-to-managed ]
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/actions-install@v1
+    - name: Download managed solution from GitHub artifact store
+      uses: actions/download-artifact@v4
+      with:
+        name: managedSolutions
+        path: ${{ inputs.solution_release_folder }}
+
+    - name: Import solution to production environment
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{ inputs.PRODUCTION_ENVIRONMENT_URL }}
+        app-id: ${{ inputs.CLIENT_ID }}
+        client-secret: ${{ secrets.envSecret }}
+        tenant-id: ${{ inputs.TENANT_ID }}
+        solution-file: ${{ inputs.solution_release_folder }}/${{ inputs.solution_name }}_managed.zip
+        force-overwrite: true
+        publish-changes: true
