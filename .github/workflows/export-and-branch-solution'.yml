@@ -1,4 +1,6 @@
 name: export-and-branch-solution
+# Export solution from DEV environment
+# Unpack it and prepare, commit and push a git branch with the changes
 
 on:
   workflow_dispatch:
@@ -33,11 +35,13 @@ jobs:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         lfs: true
+
     - name: Install Power Platform CLI
       uses: microsoft/powerplatform-actions/actions-install@v1
 
@@ -49,8 +53,7 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID }}
 
-    # Export Unmanaged Solution
-    - name: Export Unmanaged solution from DEV
+    - name: Export solution from DEV
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
         environment-url: ${{ env.ENVIRONMENT_URL }}
@@ -58,52 +61,19 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID }}
         solution-name: ${{ github.event.inputs.solution_name }}
-        solution-output-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}_unmanaged.zip
-        managed: false
-
-    # Export Managed Solution
-    - name: Export Managed solution from DEV
-      uses: microsoft/powerplatform-actions/export-solution@v1
-      with:
-        environment-url: ${{ env.ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID }}
-        solution-name: ${{ github.event.inputs.solution_name }}
-        solution-output-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}_managed.zip
-        managed: true
-    # Unpack Unmanaged Solution
-    - name: Unpack Unmanaged solution
+        solution-output-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}.zip
+    - name: Unpack solution
       uses: microsoft/powerplatform-actions/unpack-solution@v1
       with:
-        solution-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}_unmanaged.zip
-        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}_unmanaged
+        solution-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}.zip
+        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}
         solution-type: 'Unmanaged'
         overwrite-files: true
 
-    # Unpack Managed Solution
-    - name: Unpack Managed solution
-      uses: microsoft/powerplatform-actions/unpack-solution@v1
-      with:
-        solution-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}_managed.zip
-        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}_managed
-        solution-type: 'Managed'
-        overwrite-files: true
-
-    # Branch Unmanaged Solution
-    - name: Branch Unmanaged solution and prepare for PR
+    - name: Branch solution and prepare for PR
       uses: microsoft/powerplatform-actions/branch-solution@v1
       with:
-        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}_unmanaged
-        solution-target-folder: ${{ github.event.inputs.solution_target_folder }}${{ github.event.inputs.solution_name }}_unmanaged
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        allow-empty-commit: true
-
-    # Branch Managed Solution
-    - name: Branch Managed solution and prepare for PR
-      uses: microsoft/powerplatform-actions/branch-solution@v1
-      with:
-        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}_managed
-        solution-target-folder: ${{ github.event.inputs.solution_target_folder }}${{ github.event.inputs.solution_name }}_managed
+        solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}
+        solution-target-folder: ${{ github.event.inputs.solution_target_folder }}${{ github.event.inputs.solution_name }}
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         allow-empty-commit: true
