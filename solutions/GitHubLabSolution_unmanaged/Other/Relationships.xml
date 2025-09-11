@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_cr44c_todo" />
+  <EntityRelationship Name="lk_cr44c_todo_createdby" />
+  <EntityRelationship Name="lk_cr44c_todo_modifiedby" />
+  <EntityRelationship Name="owner_cr44c_todo" />
+  <EntityRelationship Name="team_cr44c_todo" />
+  <EntityRelationship Name="user_cr44c_todo" />
+</EntityRelationships>
