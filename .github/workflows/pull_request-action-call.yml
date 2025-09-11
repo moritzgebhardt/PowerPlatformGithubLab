@@ -8,7 +8,7 @@ on:
 jobs:
   release-solution:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
-    uses: ./.github/workflows/release-solution-to-prod-reusable.yml
+    uses: ./.github/workflows/release-solution-to-int-reusable.yml
     with:
       solution_name: GitHubLabSolution
       BUILD_ENVIRONMENT_URL: https://org9e7ccea6.crm4.dynamics.com
