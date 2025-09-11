@@ -46,7 +46,7 @@ on:
         required: true
 
 jobs:
-  convert-to-managed:
+  convert-to-int:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
@@ -96,7 +96,7 @@ jobs:
         path: ${{ inputs.solution_shipping_folder }}/
 
   release-to-staging:
-    needs: [ convert-to-managed ]
+    needs: [ convert-to-int ]
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
