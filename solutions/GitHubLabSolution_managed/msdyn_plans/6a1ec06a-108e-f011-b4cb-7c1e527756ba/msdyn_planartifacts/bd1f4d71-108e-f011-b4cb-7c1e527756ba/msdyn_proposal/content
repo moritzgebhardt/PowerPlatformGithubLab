@@ -1,0 +1,43 @@
+{
+  "name": "Simple Todo Organizer",
+  "description": "An app for task managers to create, update, mark complete, delete, and filter personal todos easily in one place.",
+  "typesOfUsers": [
+    "Task manager"
+  ],
+  "tableSchemaNames": [
+    "cr44c_Todo"
+  ],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Create a new todo so that I can keep track of tasks I need to complete.",
+      "userType": "Task manager"
+    },
+    {
+      "id": "us02",
+      "description": "Edit a todo so that I can update details or make corrections.",
+      "userType": "Task manager"
+    },
+    {
+      "id": "us03",
+      "description": "Mark a todo as completed so that I know which tasks are finished.",
+      "userType": "Task manager"
+    },
+    {
+      "id": "us04",
+      "description": "Delete a todo so that I can remove tasks I no longer need to track.",
+      "userType": "Task manager"
+    },
+    {
+      "id": "us05",
+      "description": "View a list of all todos so that I can see all my pending and completed tasks in one place.",
+      "userType": "Task manager"
+    },
+    {
+      "id": "us06",
+      "description": "Sort or filter todos by status or due date so that I can focus on relevant tasks.",
+      "userType": "Task manager"
+    }
+  ],
+  "version": 1
+}
