@@ -1,0 +1,13 @@
+<msdyn_planartifact msdyn_planartifactid="bd1f4d71-108e-f011-b4cb-7c1e527756ba">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_artifactmetadata mimetype="application/octet-stream">content</msdyn_artifactmetadata>
+  <msdyn_artifactmetadataschemaversion>1.0</msdyn_artifactmetadataschemaversion>
+  <msdyn_artifactstatus>419550001</msdyn_artifactstatus>
+  <msdyn_description>An app for task managers to create, update, mark complete, delete, and filter personal todos easily in one place.</msdyn_description>
+  <msdyn_name>Simple Todo Organizer</msdyn_name>
+  <msdyn_proposal mimetype="application/octet-stream">content</msdyn_proposal>
+  <msdyn_proposalschemaversion>1.0</msdyn_proposalschemaversion>
+  <msdyn_type>PowerAppsModelApp</msdyn_type>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_planartifact>
