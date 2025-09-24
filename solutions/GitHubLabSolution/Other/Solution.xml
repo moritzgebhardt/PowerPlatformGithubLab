@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.25082.158" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25082.158" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25083.00167">
+<ImportExportXml version="9.2.25084.176" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25084.176" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25084.00176">
   <SolutionManifest>
     <UniqueName>GitHubLabSolution</UniqueName>
     <LocalizedNames>
@@ -91,13 +91,13 @@
       </MissingDependency>
       <MissingDependency>
         <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.15)" id.uniquename="AppChannel">
-          <package appName="PowerAppsAppFramework Package" version="1.0.0.21">PowerAppsAppFramework_Anchor (1.0.0.21)</package>
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.23">PowerAppsAppFramework_Anchor (1.0.0.23)</package>
         </Required>
         <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=cr44c_SimpleTodoO2046c39b,settingdefinitionid.uniquename=AppChannel" id.parentappmoduleid.uniquename="cr44c_SimpleTodoO2046c39b" id.settingdefinitionid.uniquename="AppChannel" />
       </MissingDependency>
       <MissingDependency>
         <Required type="SettingDefinition" displayName="IsAppGeneratedByPlanDesigner" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.15)" id.uniquename="IsAppGeneratedByPlanDesigner">
-          <package appName="PowerAppsAppFramework Package" version="1.0.0.21">PowerAppsAppFramework_Anchor (1.0.0.21)</package>
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.23">PowerAppsAppFramework_Anchor (1.0.0.23)</package>
         </Required>
         <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=cr44c_SimpleTodoO2046c39b,settingdefinitionid.uniquename=IsAppGeneratedByPlanDesigner" id.parentappmoduleid.uniquename="cr44c_SimpleTodoO2046c39b" id.settingdefinitionid.uniquename="IsAppGeneratedByPlanDesigner" />
       </MissingDependency>
