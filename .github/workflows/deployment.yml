@@ -24,6 +24,7 @@ env:
   TENANT_ID_TEST: 57cc5cf9-43af-426b-bb89-51f07148ddbe
   CLIENT_ID_PROD: 0b249eea-86dd-4163-9c07-d47009a5a4f1
   TENANT_ID_PROD: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+
 jobs:
   convert-to-int_prod:
     runs-on: windows-latest
@@ -56,16 +57,6 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
-    - name: Extract solution version using PAC CLI
-      id: extract_version
-      shell: pwsh
-      run: |
-        pac auth create --url ${{ env.BUILD_ENVIRONMENT_URL }} --clientId ${{ env.CLIENT_ID_TEST }} --clientSecret "${{ secrets.PowerPlatformSPN }}" --tenant ${{ env.TENANT_ID_TEST }}
-        $solution = pac solution list --json | ConvertFrom-Json | Where-Object { $_.solutionName -eq "${{ inputs.solution_name }}" }
-        $version = $solution.version
-        echo "VERSION=$version" >> $env:GITHUB_ENV
-        echo $version > out/ship/version.txt
-
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
@@ -75,9 +66,9 @@ jobs:
         tenant-id: ${{ env.TENANT_ID_TEST }}
         solution-name: ${{ inputs.solution_name }}
         managed: true
-        solution-output-file: out/ship/${{ inputs.solution_name }}_${{ env.VERSION }}_managed.zip
+        solution-output-file: out/ship/${{ inputs.solution_name }}_managed.zip
 
-    - name: Upload managed solution and version to GitHub artifact store
+    - name: Upload managed solution to GitHub artifact store
       uses: actions/upload-artifact@v4
       with:
         name: managedSolutions
@@ -88,6 +79,7 @@ jobs:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -103,13 +95,6 @@ jobs:
         name: managedSolutions
         path: out/release
 
-    - name: Read version from file
-      id: read_version
-      shell: pwsh
-      run: |
-        $version = Get-Content out/release/version.txt
-        echo "VERSION=$version" >> $env:GITHUB_ENV
-
     - name: Import solution to INT environment
       if: ${{ inputs.production_target == 'INT' }}
       uses: microsoft/powerplatform-actions/import-solution@v1
@@ -118,9 +103,10 @@ jobs:
         app-id: ${{ env.CLIENT_ID_PROD }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID_PROD }}
-        solution-file: out/release/${{ inputs.solution_name }}_${{ env.VERSION }}_managed.zip
+        solution-file: out/release/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
+
     - name: Import solution to PROD environment
       if: ${{ inputs.production_target == 'PROD' }}
       uses: microsoft/powerplatform-actions/import-solution@v1
@@ -129,6 +115,6 @@ jobs:
         app-id: ${{ env.CLIENT_ID_PROD }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID_PROD }}
-        solution-file: out/release/${{ inputs.solution_name }}_${{ env.VERSION }}_managed.zip
+        solution-file: out/release/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
