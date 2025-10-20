@@ -45,7 +45,6 @@ jobs:
         solution-folder: solutions/${{ inputs.solution_name }}
         solution-file: out/solutions/${{ inputs.solution_name }}.zip
         solution-type: Unmanaged
-
     - name: Import solution as unmanaged to build environment
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
@@ -57,28 +56,6 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
-    - name: Get solution version from build environment
-      id: get_version
-      uses: microsoft/powerplatform-actions/get-solution@v1
-      with:
-        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_TEST }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_TEST }}
-        solution-name: ${{ inputs.solution_name }}
-
-    - name: Set solution version from build environment
-      uses: microsoft/powerplatform-actions/set-solution-version@v1
-      with:
-        solution-folder: solutions/${{ inputs.solution_name }}
-        version: ${{ steps.get_version.outputs.version }}
-
-    - name: Pack solution again with updated version
-      uses: microsoft/powerplatform-actions/pack-solution@v1
-      with:
-        solution-folder: solutions/${{ inputs.solution_name }}
-        solution-file: out/solutions/${{ inputs.solution_name }}.zip
-        solution-type: Unmanaged
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
