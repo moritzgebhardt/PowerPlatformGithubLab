@@ -45,6 +45,7 @@ jobs:
         solution-folder: solutions/${{ inputs.solution_name }}
         solution-file: out/solutions/${{ inputs.solution_name }}.zip
         solution-type: Unmanaged
+
     - name: Import solution as unmanaged to build environment
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
@@ -55,6 +56,27 @@ jobs:
         solution-file: out/solutions/${{ inputs.solution_name }}.zip
         force-overwrite: true
         publish-changes: true
+
+    - name: Get solution version from build environment
+      id: get_version
+      shell: pwsh
+      run: |
+        pac auth create --url "${{ env.BUILD_ENVIRONMENT_URL }}" --client-id "${{ env.CLIENT_ID_TEST }}" --client-secret "${{ secrets.PowerPlatformSPN }}" --tenant-id "${{ env.TENANT_ID_TEST }}"
+        $version = (pac solution list --json | ConvertFrom-Json).solutions | Where-Object { $_.uniquename -eq "${{ inputs.solution_name }}" } | Select-Object -ExpandProperty version
+        echo "current_version=$version" >> $env:GITHUB_ENV
+
+    - name: Set solution version locally
+      uses: microsoft/powerplatform-actions/update-solution-version@v1
+      with:
+        solution-folder: solutions/${{ inputs.solution_name }}
+        build-version: ${{ env.current_version }}
+
+    - name: Pack solution again with updated version
+      uses: microsoft/powerplatform-actions/pack-solution@v1
+      with:
+        solution-folder: solutions/${{ inputs.solution_name }}
+        solution-file: out/solutions/${{ inputs.solution_name }}.zip
+        solution-type: Unmanaged
 
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
