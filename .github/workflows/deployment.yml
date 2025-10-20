@@ -1,41 +1,38 @@
-name: Deployment Int
+name: Manual Release with Production Selection
 
 on:
   workflow_dispatch:
     inputs:
+      production_target:
+        description: 'Wähle die Produktionsumgebung'
+        required: true
+        default: 'INT'
+        type: choice
+        options:
+          - INT
+          - PROD
       solution_name:
-        description: 'The solution name.'
+        description: 'Solution Name'
         required: true
         default: GitHubLabSolution
-      BUILD_ENVIRONMENT_URL:
-        description: 'Build environment URL.'
-        required: true
-        default: https://org9e7ccea6.crm4.dynamics.com
-      PRODUCTION_ENVIRONMENT_URL:
-        description: 'Production environment URL.'
-        required: true
-        default: https://org83701128.crm4.dynamics.com
-      CLIENT_ID:
-        description: 'Client ID.'
-        required: true
-        default: 0b249eea-86dd-4163-9c07-d47009a5a4f1
-      TENANT_ID:
-        description: 'Tenant ID.'
-        required: true
-        default: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+
+env:
+  BUILD_ENVIRONMENT_URL: https://org9e7ccea6.crm4.dynamics.com
+  INT_ENVIRONMENT_URL: https://org83701128.crm4.dynamics.com
+  PROD_ENVIRONMENT_URL: https://org12345678.crm4.dynamics.com
+  CLIENT_ID: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID: 57cc5cf9-43af-426b-bb89-51f07148ddbe
 
 jobs:
   convert-to-int:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         lfs: true
-
     - name: Install Power Platform CLI
       uses: microsoft/powerplatform-actions/actions-install@v1
 
@@ -49,10 +46,10 @@ jobs:
     - name: Import solution as unmanaged to build environment
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
-        environment-url: ${{ inputs.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ inputs.CLIENT_ID }}
+        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ inputs.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID }}
         solution-file: out/solutions/${{ inputs.solution_name }}.zip
         force-overwrite: true
         publish-changes: true
@@ -60,20 +57,21 @@ jobs:
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
-        environment-url: ${{ inputs.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ inputs.CLIENT_ID }}
+        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ inputs.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID }}
         solution-name: ${{ inputs.solution_name }}
         managed: true
         solution-output-file: out/ship/${{ inputs.solution_name }}_managed.zip
+
     - name: Upload managed solution to GitHub artifact store
       uses: actions/upload-artifact@v4
       with:
         name: managedSolutions
         path: out/ship/
 
-  release-to-staging:
+  release-to-target:
     needs: [ convert-to-int ]
     runs-on: windows-latest
     env:
@@ -93,13 +91,14 @@ jobs:
       with:
         name: managedSolutions
         path: out/release
-    - name: Import solution to production environment
+
+    - name: Import solution to selected production environment
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
-        environment-url: ${{ inputs.PRODUCTION_ENVIRONMENT_URL }}
-        app-id: ${{ inputs.CLIENT_ID }}
+        environment-url: ${{ inputs.production_target == 'PROD1' && env.INT_ENVIRONMENT_URL || env.PROD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ inputs.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID }}
         solution-file: out/release/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
