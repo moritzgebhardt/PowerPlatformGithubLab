@@ -24,7 +24,6 @@ env:
   TENANT_ID_TEST: 57cc5cf9-43af-426b-bb89-51f07148ddbe
   CLIENT_ID_PROD: 0b249eea-86dd-4163-9c07-d47009a5a4f1
   TENANT_ID_PROD: 57cc5cf9-43af-426b-bb89-51f07148ddbe
-
 jobs:
   convert-to-int_prod:
     runs-on: windows-latest
@@ -57,22 +56,13 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
-    - name: Get solution metadata
-      uses: microsoft/powerplatform-actions/get-solution@v1
-      with:
-        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_TEST }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_TEST }}
-        solution-name: ${{ inputs.solution_name }}
-        output-file: solution-metadata.json
-
-    - name: Extract solution version
+    - name: Extract solution version using PAC CLI
       id: extract_version
       shell: pwsh
       run: |
-        $metadata = Get-Content solution-metadata.json | ConvertFrom-Json
-        $version = $metadata.solution.version
+        pac auth create --url ${{ env.BUILD_ENVIRONMENT_URL }} --clientId ${{ env.CLIENT_ID_TEST }} --clientSecret "${{ secrets.PowerPlatformSPN }}" --tenant ${{ env.TENANT_ID_TEST }}
+        $solution = pac solution list --json | ConvertFrom-Json | Where-Object { $_.solutionName -eq "${{ inputs.solution_name }}" }
+        $version = $solution.version
         echo "VERSION=$version" >> $env:GITHUB_ENV
         echo $version > out/ship/version.txt
 
@@ -98,7 +88,6 @@ jobs:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -120,6 +109,7 @@ jobs:
       run: |
         $version = Get-Content out/release/version.txt
         echo "VERSION=$version" >> $env:GITHUB_ENV
+
     - name: Import solution to INT environment
       if: ${{ inputs.production_target == 'INT' }}
       uses: microsoft/powerplatform-actions/import-solution@v1
