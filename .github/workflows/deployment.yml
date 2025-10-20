@@ -57,37 +57,6 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
-    - name: Export current solution details
-      id: export_details
-      uses: microsoft/powerplatform-actions/export-solution-details@v1
-      with:
-        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_TEST }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_TEST }}
-        solution-name: ${{ inputs.solution_name }}
-
-    - name: Bump version (Revision +1)
-      id: bump_version
-      run: |
-        echo "Aktuelle Version: ${{ steps.export_details.outputs.solution-version }}"
-        $version = "${{ steps.export_details.outputs.solution-version }}"
-        $parts = $version.Split(".")
-        $parts[3] = [int]$parts[3] + 1
-        $newVersion = "$($parts[0]).$($parts[1]).$($parts[2]).$($parts[3])"
-        echo "NEW_VERSION=$newVersion" >> $env:GITHUB_ENV
-        echo "Neue Version: $newVersion"
-
-    - name: Set new solution version in build environment
-      uses: microsoft/powerplatform-actions/set-online-solution-version@v1
-      with:
-        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_TEST }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_TEST }}
-        name: ${{ inputs.solution_name }}
-        version: ${{ env.NEW_VERSION }}
-
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
