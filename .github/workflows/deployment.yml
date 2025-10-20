@@ -15,10 +15,22 @@ on:
         description: 'Solution Name'
         required: true
         default: GitHubLabSolution
-      solution_version:
-        description: 'Solution Version (z. B. 1.0.0.0)'
+      version_major:
+        description: 'Major Version'
         required: true
-        default: '1.0.0.0'
+        default: '1'
+      version_minor:
+        description: 'Minor Version'
+        required: true
+        default: '0'
+      version_build:
+        description: 'Build Version'
+        required: true
+        default: '0'
+      version_revision:
+        description: 'Revision Version'
+        required: true
+        default: '1'
 
 env:
   BUILD_ENVIRONMENT_URL: https://org9e7ccea6.crm4.dynamics.com
@@ -46,8 +58,9 @@ jobs:
     - name: Set solution version manually
       uses: microsoft/powerplatform-actions/update-solution-version@v1
       with:
-        solution-folder: solutions/${{ inputs.solution_name }}
-        build-version: ${{ inputs.solution_version }}
+        solutionPath: solutions/${{ inputs.solution_name }}
+        build-version: ${{ inputs.version_build }}
+        revision-version: ${{ inputs.version_revision }}
 
     - name: Pack solution
       uses: microsoft/powerplatform-actions/pack-solution@v1
