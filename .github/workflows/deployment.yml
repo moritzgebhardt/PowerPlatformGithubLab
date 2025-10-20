@@ -43,9 +43,14 @@ jobs:
       id: get_version
       shell: pwsh
       run: |
-        $pacPath = "$env:USERPROFILE\\.pac\\tools\\pac.exe"
-        & $pacPath auth create --url "${{ env.BUILD_ENVIRONMENT_URL }}" --client-id "${{ env.CLIENT_ID_TEST }}" --client-secret "${{ secrets.PowerPlatformSPN }}" --tenant-id "${{ env.TENANT_ID_TEST }}"
-        $version = (& $pacPath solution list --json | ConvertFrom-Json).solutions | Where-Object { $_.uniquename -eq "${{ inputs.solution_name }}" } | Select-Object -ExpandProperty version
+        $pacPath = "${{ env.PAC_PATH }}"
+        & $pacPath auth create --url "${{ env.BUILD_ENVIRONMENT_URL }}" `
+          --client-id "${{ env.CLIENT_ID_TEST }}" `
+          --client-secret "${{ secrets.PowerPlatformSPN }}" `
+          --tenant-id "${{ env.TENANT_ID_TEST }}"
+        $version = (& $pacPath solution list --json | ConvertFrom-Json).solutions |
+          Where-Object { $_.uniquename -eq "${{ inputs.solution_name }}" } |
+          Select-Object -ExpandProperty version
         echo "current_version=$version" >> $env:GITHUB_ENV
 
     - name: Set solution version locally
