@@ -20,11 +20,13 @@ env:
   BUILD_ENVIRONMENT_URL: https://org9e7ccea6.crm4.dynamics.com
   INT_ENVIRONMENT_URL: https://org0e0972b3.crm4.dynamics.com
   PROD_ENVIRONMENT_URL: https://org0e0972b3.crm4.dynamics.com
-  CLIENT_ID: 0b249eea-86dd-4163-9c07-d47009a5a4f1
-  TENANT_ID: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+  CLIENT_ID_TEST: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID_TEST: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+  CLIENT_ID_PROD: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID_PROD: 57cc5cf9-43af-426b-bb89-51f07148ddbe
 
 jobs:
-  convert-to-int:
+  convert-to-int_prod:
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
@@ -47,9 +49,9 @@ jobs:
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
         environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID }}
+        app-id: ${{ env.CLIENT_ID_Test }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID_TEST }}
         solution-file: out/solutions/${{ inputs.solution_name }}.zip
         force-overwrite: true
         publish-changes: true
@@ -58,9 +60,9 @@ jobs:
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
         environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID }}
+        app-id: ${{ env.CLIENT_ID_TEST }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID_TEST }}
         solution-name: ${{ inputs.solution_name }}
         managed: true
         solution-output-file: out/ship/${{ inputs.solution_name }}_managed.zip
@@ -72,7 +74,7 @@ jobs:
         path: out/ship/
 
   release-to-target:
-    needs: [ convert-to-int ]
+    needs: [ convert-to-int_prod ]
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
@@ -96,9 +98,9 @@ jobs:
       uses: microsoft/powerplatform-actions/import-solution@v1
       with:
         environment-url: ${{ inputs.production_target == 'PROD1' && env.INT_ENVIRONMENT_URL || env.PROD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID }}
+        app-id: ${{ env.CLIENT_ID_PROD }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID }}
+        tenant-id: ${{ env.TENANT_ID_PROD }}
         solution-file: out/release/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
