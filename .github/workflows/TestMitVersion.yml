@@ -57,6 +57,30 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
+    - name: Extrahiere Solution-Version aus solution.xml
+      id: extract_version
+      shell: pwsh
+      run: |
+        Expand-Archive -Path "out/solutions/${{ inputs.solution_name }}.zip" -DestinationPath "out/solutions/unpacked"
+        $solutionXmlPath = Get-ChildItem -Path "out/solutions/unpacked" -Recurse -Filter "Solution.xml" | Select-Object -First 1
+        if (-not $solutionXmlPath) {
+          Write-Error "Solution.xml wurde nicht gefunden."
+          exit 1
+        }
+        [xml]$solutionXml = Get-Content $solutionXmlPath.FullName
+        $version = $solutionXml.ImportExportXml.SolutionManifest.Version
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
+    - name: Setze Online Solution-Version in Build-Umgebung
+      uses: microsoft/powerplatform-actions/set-online-solution-version@v1
+      with:
+        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID_TEST }}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{ env.TENANT_ID_TEST }}
+        name: ${{ inputs.solution_name }}
+        version: ${{ steps.extract_version.outputs.version }}
+
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v1
       with:
@@ -95,20 +119,6 @@ jobs:
         name: managedSolutions
         path: out/release
 
-    - name: Extrahiere Solution-Version aus solution.xml
-      id: extract_version
-      shell: pwsh
-      run: |
-        Expand-Archive -Path "out/release/${{ inputs.solution_name }}_managed.zip" -DestinationPath "out/release/unpacked"
-        $solutionXmlPath = Get-ChildItem -Path "out/release/unpacked" -Recurse -Filter "Solution.xml" | Select-Object -First 1
-        if (-not $solutionXmlPath) {
-          Write-Error "Solution.xml wurde nicht gefunden."
-          exit 1
-        }
-        [xml]$solutionXml = Get-Content $solutionXmlPath.FullName
-        $version = $solutionXml.ImportExportXml.SolutionManifest.Version
-        echo "version=$version" >> $env:GITHUB_OUTPUT
-
     - name: Import solution to INT environment
       if: ${{ inputs.production_target == 'INT' }}
       uses: microsoft/powerplatform-actions/import-solution@v1
@@ -121,17 +131,6 @@ jobs:
         force-overwrite: true
         publish-changes: true
 
-    - name: Setze Online Solution-Version in INT
-      if: ${{ inputs.production_target == 'INT' }}
-      uses: microsoft/powerplatform-actions/set-online-solution-version@v1
-      with:
-        environment-url: ${{ env.INT_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_PROD }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_PROD }}
-        name: ${{ inputs.solution_name }}
-        version: ${{ steps.extract_version.outputs.version }}
-
     - name: Import solution to PROD environment
       if: ${{ inputs.production_target == 'PROD' }}
       uses: microsoft/powerplatform-actions/import-solution@v1
@@ -143,14 +142,3 @@ jobs:
         solution-file: out/release/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
-
-    - name: Setze Online Solution-Version in PROD
-      if: ${{ inputs.production_target == 'PROD' }}
-      uses: microsoft/powerplatform-actions/set-online-solution-version@v1
-      with:
-        environment-url: ${{ env.PROD_ENVIRONMENT_URL }}
-        app-id: ${{ env.CLIENT_ID_PROD }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{ env.TENANT_ID_PROD }}
-        name: ${{ inputs.solution_name }}
-        version: ${{ steps.extract_version.outputs.version }}
