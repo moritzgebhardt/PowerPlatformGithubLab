@@ -154,4 +154,3 @@ jobs:
         tenant-id: ${{ env.TENANT_ID_PROD }}
         name: ${{ inputs.solution_name }}
         version: ${{ steps.extract_version.outputs.version }}
-``
