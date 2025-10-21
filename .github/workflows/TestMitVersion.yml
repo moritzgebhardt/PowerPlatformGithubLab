@@ -1,4 +1,4 @@
-name: Manual Release with Production Selection
+name: Manual Release with Production Selection and Version
 
 on:
   workflow_dispatch:
