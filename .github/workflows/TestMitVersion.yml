@@ -1,4 +1,4 @@
-name: Manual Release with Production Selection and Version
+name: Manual Release with Production Selection
 
 on:
   workflow_dispatch:
@@ -88,7 +88,6 @@ jobs:
 
     - name: Install Power Platform CLI
       uses: microsoft/powerplatform-actions/actions-install@v1
-
     - name: Download managed solution from GitHub artifact store
       uses: actions/download-artifact@v4
       with:
@@ -100,7 +99,12 @@ jobs:
       shell: pwsh
       run: |
         Expand-Archive -Path "out/release/${{ inputs.solution_name }}_managed.zip" -DestinationPath "out/release/unpacked"
-        [xml]$solutionXml = Get-Content "out/release/unpacked/Other/Solution.xml"
+        $solutionXmlPath = Get-ChildItem -Path "out/release/unpacked" -Recurse -Filter "Solution.xml" | Select-Object -First 1
+        if (-not $solutionXmlPath) {
+          Write-Error "Solution.xml wurde nicht gefunden."
+          exit 1
+        }
+        [xml]$solutionXml = Get-Content $solutionXmlPath.FullName
         $version = $solutionXml.ImportExportXml.SolutionManifest.Version
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
