@@ -88,6 +88,7 @@ jobs:
 
     - name: Install Power Platform CLI
       uses: microsoft/powerplatform-actions/actions-install@v1
+
     - name: Download managed solution from GitHub artifact store
       uses: actions/download-artifact@v4
       with:
@@ -128,8 +129,8 @@ jobs:
         app-id: ${{ env.CLIENT_ID_PROD }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID_PROD }}
-        solution-name: ${{ inputs.solution_name }}
-        solution-version: ${{ steps.extract_version.outputs.version }}
+        name: ${{ inputs.solution_name }}
+        version: ${{ steps.extract_version.outputs.version }}
 
     - name: Import solution to PROD environment
       if: ${{ inputs.production_target == 'PROD' }}
@@ -151,5 +152,6 @@ jobs:
         app-id: ${{ env.CLIENT_ID_PROD }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID_PROD }}
-        solution-name: ${{ inputs.solution_name }}
-        solution-version: ${{ steps.extract_version.outputs.version }}
+        name: ${{ inputs.solution_name }}
+        version: ${{ steps.extract_version.outputs.version }}
+``
