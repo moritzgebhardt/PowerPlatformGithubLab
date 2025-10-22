@@ -1,0 +1,122 @@
+name: deployment swissgrid
+ 
+on:
+  workflow_dispatch:
+    inputs:
+      production_target:
+        description: 'Wähle die Produktionsumgebung'
+        required: true
+        default: 'INT'
+        type: choice
+        options:
+          - INT
+          - PROD
+      solution_name:
+        description: 'Solution Name'
+        required: true
+        default: GithubPipelineTestApp
+ 
+env:
+  BUILD_ENVIRONMENT_URL: https://managed-dev.crm17.dynamics.com
+  INT_ENVIRONMENT_URL: https://managed-int.crm17.dynamics.com
+  PROD_ENVIRONMENT_URL: https://managed-prod.crm17.dynamics.com
+  CLIENT_ID_DEV: 1d3b6579-e864-4519-b214-910fb2f3cc9f
+  TENANT_ID_DEV: 828a1e7b-26e3-4858-9519-c1d0560887e4
+  CLIENT_ID_INT: 571355b9-2378-453d-ba36-92059aca64d9
+  TENANT_ID_INT: 3513115c-2b0b-4007-86e9-38c4f05c7465
+  CLIENT_ID_PROD: bae9b4b1-04cc-4a1b-b207-5fc41b48f028
+  TENANT_ID_PROD: 3513115c-2b0b-4007-86e9-38c4f05c7465
+ 
+jobs:
+  convert-to-int_prod:
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+ 
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/actions-install@v1
+ 
+    - name: Pack solution
+      uses: microsoft/powerplatform-actions/pack-solution@v1
+      with:
+        solution-folder: solutions/${{ inputs.solution_name }}
+        solution-file: out/solutions/${{ inputs.solution_name }}.zip
+        solution-type: Unmanaged
+ 
+    - name: Import solution as unmanaged to build environment
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID_DEV }}
+        client-secret: ${{ secrets.PowerPlatformSPN_DEV }}
+        tenant-id: ${{ env.TENANT_ID_DEV }}
+        solution-file: out/solutions/${{ inputs.solution_name }}.zip
+        force-overwrite: true
+        publish-changes: true
+ 
+    - name: Export solution as managed
+      uses: microsoft/powerplatform-actions/export-solution@v1
+      with:
+        environment-url: ${{ env.BUILD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID_DEV }}
+        client-secret: ${{ secrets.PowerPlatformSPN_DEV }}
+        tenant-id: ${{ env.TENANT_ID_DEV }}
+        solution-name: ${{ inputs.solution_name }}
+        managed: true
+        solution-output-file: out/ship/${{ inputs.solution_name }}_managed.zip
+ 
+    - name: Upload managed solution to GitHub artifact store
+      uses: actions/upload-artifact@v4
+      with:
+        name: managedSolutions
+        path: out/ship/
+ 
+  release-to-target:
+    needs: [ convert-to-int_prod ]
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+ 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+ 
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/actions-install@v1
+ 
+    - name: Download managed solution from GitHub artifact store
+      uses: actions/download-artifact@v4
+      with:
+        name: managedSolutions
+        path: out/release
+ 
+    - name: Import solution to INT environment
+      if: ${{ inputs.production_target == 'INT' }}
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{ env.INT_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID_INT }}
+        client-secret: ${{ secrets.PowerPlatformSPN_INT }}
+        tenant-id: ${{ env.TENANT_ID_INT }}
+        solution-file: out/release/${{ inputs.solution_name }}_managed.zip
+        force-overwrite: true
+        publish-changes: true
+ 
+    - name: Import solution to PROD environment
+      if: ${{ inputs.production_target == 'PROD' }}
+      uses: microsoft/powerplatform-actions/import-solution@v1
+      with:
+        environment-url: ${{ env.PROD_ENVIRONMENT_URL }}
+        app-id: ${{ env.CLIENT_ID_PROD }}
+        client-secret: ${{ secrets.PowerPlatformSPN_PROD }}
+        tenant-id: ${{ env.TENANT_ID_PROD }}
+        solution-file: out/release/${{ inputs.solution_name }}_managed.zip
+        force-overwrite: true
+        publish-changes: true
