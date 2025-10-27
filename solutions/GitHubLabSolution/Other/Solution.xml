@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.25091.165" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25091.165" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25091.00165">
+<ImportExportXml version="9.2.25095.157" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25095.157" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25095.00163">
   <SolutionManifest>
     <UniqueName>GitHubLabSolution</UniqueName>
     <LocalizedNames>
       <LocalizedName description="GitHub Lab Solution" languagecode="1033" />
     </LocalizedNames>
     <Descriptions />
-    <Version>1.0.0.0</Version>
+    <Version>2.0.0.0</Version>
     <Managed>0</Managed>
     <Publisher>
       <UniqueName>Cr550ca</UniqueName>
