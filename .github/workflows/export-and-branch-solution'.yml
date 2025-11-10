@@ -42,11 +42,12 @@ jobs:
 
     - name: Generate solution version
       id: version
+      shell: pwsh
       run: |
-        DATE=$(date +'%Y%m%d')
-        VERSION="$DATE.${{ github.run_number }}"
-        echo "Solution version: $VERSION"
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        $date = Get-Date -Format "yyyyMMdd"
+        $version = "$date.${{ github.run_number }}"
+        Write-Output "Solution version: $version"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
 
     - name: Install Power Platform CLI
       uses: microsoft/powerplatform-actions/actions-install@v1
