@@ -4,26 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       solution_name:
-        description: 'Name of the solution to work on from Power Platform'
+        description: 'Name of the solution...'
         required: true
         default: GitHubLabSolution
-      solution_exported_folder:
-        description: 'Folder name for staging the exported solution *do not change*'
-        required: true
-        default: out/exported/
-      solution_folder:
-        description: 'Staging the unpacked solution folder before check-in *do not change*'
-        required: true
-        default: out/solutions/
-      solution_target_folder: 
-        description: 'Folder name to be created and checked in *do not change*'
-        required: true
-        default: solutions/
+      # weitere Inputs...
 
 env:
   ENVIRONMENT_URL: 'https://org9e7ccea6.crm4.dynamics.com'
-  CLIENT_ID: '0b249eea-86dd-4163-9c07-d47009a5a4f1'
-  TENANT_ID: '57cc5cf9-43af-426b-bb89-51f07148ddbe'
+  CLIENT_ID: '...'
+  TENANT_ID: '...'
 
 permissions:
   contents: write
@@ -31,14 +20,9 @@ permissions:
 jobs:
   export-from-dev:
     runs-on: windows-latest
-    env:
-      RUNNER_DEBUG: 1
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        lfs: true
+    - uses: actions/checkout@v2
 
     - name: Generate solution version
       id: version
@@ -84,13 +68,13 @@ jobs:
         app-id: ${{ env.CLIENT_ID }}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{ env.TENANT_ID }}
-        solution-name: ${{ github.event.inputs.solution_name }}
-        solution-version: ${{ steps.version.outputs.version }}
+        name: ${{ github.event.inputs.solution_name }}
+        version: ${{ steps.version.outputs.version }}
 
     - name: Branch solution and prepare for PR
       uses: microsoft/powerplatform-actions/branch-solution@v1
       with:
         solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}
         solution-target-folder: ${{ github.event.inputs.solution_target_folder }}${{ github.event.inputs.solution_name }}
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         allow-empty-commit: true
