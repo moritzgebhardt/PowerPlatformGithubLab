@@ -44,8 +44,7 @@ jobs:
       id: version
       run: |
         DATE=$(date +'%Y%m%d')
-        COUNT=$(git rev-list --count HEAD --since="$DATE 00:00")
-        VERSION="$DATE.$COUNT"
+        VERSION="$DATE.${{ github.run_number }}"
         echo "Solution version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -86,7 +85,6 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         allow-empty-commit: true
 
-    # Optional: Pack solution with version
     - name: Pack solution with version
       uses: microsoft/powerplatform-actions/pack-solution@v1
       with:
