@@ -1,5 +1,8 @@
 name: deployment swissgrid
- 
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
