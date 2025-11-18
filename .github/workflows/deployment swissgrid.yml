@@ -17,18 +17,18 @@ on:
       solution_name:
         description: 'Solution Name'
         required: true
-        default: GithubPipelineTestApp
+        default: GitHubLabSolution
  
 env:
-  BUILD_ENVIRONMENT_URL: https://managed-dev.crm17.dynamics.com
-  INT_ENVIRONMENT_URL: https://managed-int.crm17.dynamics.com
-  PROD_ENVIRONMENT_URL: https://managed-prod.crm17.dynamics.com
-  CLIENT_ID_DEV: 1d3b6579-e864-4519-b214-910fb2f3cc9f
-  TENANT_ID_DEV: 828a1e7b-26e3-4858-9519-c1d0560887e4
-  CLIENT_ID_INT: 571355b9-2378-453d-ba36-92059aca64d9
-  TENANT_ID_INT: 3513115c-2b0b-4007-86e9-38c4f05c7465
-  CLIENT_ID_PROD: bae9b4b1-04cc-4a1b-b207-5fc41b48f028
-  TENANT_ID_PROD: 3513115c-2b0b-4007-86e9-38c4f05c7465
+  BUILD_ENVIRONMENT_URL: https://org9e7ccea6.crm4.dynamics.com
+  INT_ENVIRONMENT_URL: https://orgf617011c.crm4.dynamics.com
+  PROD_ENVIRONMENT_URL: https://org0e0972b3.crm4.dynamics.com
+  CLIENT_ID_DEV: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID_DEV: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+  CLIENT_ID_INT: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID_INT: 57cc5cf9-43af-426b-bb89-51f07148ddbe
+  CLIENT_ID_PROD: 0b249eea-86dd-4163-9c07-d47009a5a4f1
+  TENANT_ID_PROD: 57cc5cf9-43af-426b-bb89-51f07148ddbe
  
 jobs:
   convert-to-int_prod:
